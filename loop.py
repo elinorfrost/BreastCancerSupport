@@ -1,6 +1,6 @@
 # loop.py
 # Elinor Frost
-# This file loops through pages of a website, calling functions from pull_data.py to extract data from each page.
+# This file loops through pages of a Health Unlocked website, calling functions from pull_data.py to extract data from each page.
 import pull_data as pull
 import bs4
 import json
@@ -8,16 +8,14 @@ import json
 def main():
     # set first url
     base_url = "https://healthunlocked.com"
-    month_base_url = base_url + "/share-metastatic-support/posts/archive/2024/"
+    month_base_url = base_url + "/pregnancy-parenting-support/posts/archive/2024/"
+
+    # Several communities of interest
+    # month_base_url = base_url + "/bashh/posts/archive/2024/"
+    # month_base_url = base_url + "/share-metastatic-support/posts/archive/2024/"
     month_urls = []
 
-    # create list of urls for each month of posts
-    # TODO: must be able to list more pages.
-    # If a month had more than 30 posts, it has at least one more page.
-    # The change in link is easy, "?page=1" becomes "?page=2"
-    # maybe use a conditional to move to the next page if there's a "next page" option after 30 posts
-
-
+    # add urls to list 
     for i in range(12):
         if i < 9:
             month_urls.append(month_base_url + "0" + str(i + 1) + "?page=1")
@@ -38,7 +36,7 @@ def main():
             link = post.find("a")["href"]
             link = base_url + link
             urls.append(link)
-        
+
         # add all of this month's posts
         all_urls.extend(urls)
 
@@ -48,17 +46,20 @@ def main():
     data = []
 
     # TEST
-    for i in range(10):
-        url = all_urls[i]
-        data.append(pull.main(url))
-
-
-    # TODO: When json formatting ready, go through all links
-    # for url in all_urls:
+    # for i in range(10):
+    #     url = all_urls[i]
     #     data.append(pull.main(url))
 
 
-    with open("many_post_content.json", "w") as file:
+    # Write data to json for all posts
+    i = 0
+    for url in all_urls:
+        print(i)
+        i += 1
+        data.append(pull.main(url))
+
+
+    with open("pregParentSupport2024.json", "w") as file:
         json.dump(data, file, indent=4)
 
 if __name__ == "__main__":
